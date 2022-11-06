@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:background="@drawable/bkg_custom_grad_lin"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".game.GameFragment">
+
+    <TextView
+        android:id="@+id/tv_game_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:layout_marginBottom="78dp"
+        android:textAllCaps="true"
+        android:fontFamily="@font/montserrat_black"
+        android:textColor="@color/add_colour_the_most_bright"
+        android:textSize="25sp" />
+
+    <ImageView
+        android:id="@+id/img_logo_game_1"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="38dp"
+        android:src="@drawable/snowboard" />
+
+    <TextView
+        android:id="@+id/tv_score_game_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Defeated enemies :0"
+        android:textColor="@color/add_colour_the_most_bright"
+        android:textSize="26sp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_start"
+        android:layout_width="wrap_content"
+        android:fontFamily="@font/montserrat_black"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="16dp"
+        android:text="save cleopatra"
+        android:textAllCaps="true"
+        android:textSize="20sp" />
+
+
+
+</LinearLayout>

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Book of Mountain</string>
+    <string name="app_name_author">© Book of Mountain</string>
+    <string name="image_chooser">Choose Image</string>
+
+
+    <string name="facebook_app_id">674106090761865</string>
+    <string name="fb_login_protocol_scheme">fb674106090761865</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
