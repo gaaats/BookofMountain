@@ -11,18 +11,22 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.appsflyer.AppsFlyerLib
 import com.google.android.material.snackbar.Snackbar
-import com.kongregate.mobile.burritob.AppClass.Companion.C1
-import com.kongregate.mobile.burritob.AppClass.Companion.D1
-import com.kongregate.mobile.burritob.AppClass.Companion.MAIN_ID
+import com.kongregate.mobile.burritob.data.DataStoreRepo
 import com.kongregate.mobile.burritob.databinding.ActivityOpenVebVievBinding
 import com.onesignal.OneSignal
-import com.orhanobut.hawk.Hawk
+import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
+import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class OpenVebVievActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var dataStoreRepo: DataStoreRepo
     private val FILECHOOSERRESULTCODE = 1
 
     // the same for Android 5.0 methods only
@@ -247,12 +251,15 @@ class OpenVebVievActivity : AppCompatActivity() {
 
     private fun getUrl(): String {
 
-        val spoon = getSharedPreferences("SP_WEBVIEW_PREFS", AppCompatActivity.MODE_PRIVATE)
+//        val spoon = getSharedPreferences("SP_WEBVIEW_PREFS", AppCompatActivity.MODE_PRIVATE)
 
-        val cpOne:String? = Hawk.get(C1)
-        val dpOne: String? = Hawk.get(D1)
-        val mainId: String? = Hawk.get(MAIN_ID)
+//        val cpOne:String? = Hawk.get(KEY_C1)
+//        val dpOne: String? = Hawk.get(KEY_D1)
+//        val mainId: String? = Hawk.get(KEY_FOR_MAIN_ID)
 
+        var cpOne = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_C1_DATA)
+        var dpOne = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_D1_DATA)
+        var mainId = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_FOR_MAIN_ID_DATA)
 
         val pack = "com.kongregate.mobile.burritob"
 
@@ -287,7 +294,11 @@ class OpenVebVievActivity : AppCompatActivity() {
                 "$resultAB$one$dpOne&$two$afId&$three$mainId&$four$pack&$five$androidVersion&$six$linkornull"
         }
         pushToOneSignal(afId.toString())
-        return spoon.getString("SAVED_URL", after).toString()
+
+
+//        return spoon.getString("SAVED_URL", after).toString()
+        val liiink = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_SAVED_URL) ?: after
+        return liiink
     }
 
 
@@ -355,18 +366,21 @@ class OpenVebVievActivity : AppCompatActivity() {
         if (!url!!.contains("t.me")) {
 
             if (firstUrl == "") {
-                firstUrl = getSharedPreferences(
-                    "SP_WEBVIEW_PREFS",
-                    AppCompatActivity.MODE_PRIVATE
-                ).getString(
-                    "SAVED_URL",
-                    url
-                ).toString()
+//                firstUrl = getSharedPreferences(
+//                    "SP_WEBVIEW_PREFS",
+//                    AppCompatActivity.MODE_PRIVATE
+//                ).getString(
+//                    "SAVED_URL",
+//                    url
+//                ).toString()
+                firstUrl = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_SAVED_URL) ?: url
 
-                val sp = getSharedPreferences("SP_WEBVIEW_PREFS", AppCompatActivity.MODE_PRIVATE)
-                val editor = sp.edit()
-                editor.putString("SAVED_URL", url)
-                editor.apply()
+//                val sp = getSharedPreferences("SP_WEBVIEW_PREFS", AppCompatActivity.MODE_PRIVATE)
+//                val editor = sp.edit()
+
+                dataStoreRepo.saveToDataStore(DataStoreRepo.KEY_SAVED_URL, url)
+//                editor.putString("SAVED_URL", url)
+//                editor.apply()
             }
         }
     }

@@ -2,17 +2,32 @@ package com.kongregate.mobile.burritob
 
 import android.app.Application
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
+import com.kongregate.mobile.burritob.data.DataStoreRepo
+import com.kongregate.mobile.burritob.data.DataStoreRepo.Companion.KEY_FOR_MAIN_ID_DATA
 import com.onesignal.OneSignal
-import com.orhanobut.hawk.Hawk
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class AppClass:Application() {
+
+@HiltAndroidApp
+class AppClass : Application() {
+
+    @Inject
+    lateinit var dataStoreRepo: DataStoreRepo
 
     companion object {
+
         const val AF_DEV_KEY = "dXbcrnFMv3aNP3fW83VipY"
         const val jsoupCheck = " 1v3v"
         const val ONESIGNAL_APP_ID = "bcea6d33-c8f9-4e9f-8709-31e864e07351"
@@ -24,15 +39,28 @@ class AppClass:Application() {
 
         val odone = "sub_id_1="
 
-        var MAIN_ID: String? = ""
-        var C1: String? = "c11"
-        var D1: String? = "d11"
-        var CH: String? = "check"
+//        var KEY_FOR_MAIN_ID: String = ""
+//        var KEY_C1: String? = "c11"
+//        var KEY_D1: String? = "d11"
+//        var KEY_CH: String? = "check"
+//
+//        var KEY_FOR_MAIN_ID_DATA = stringPreferencesKey("")
+//        var KEY_C1_DATA = stringPreferencesKey("c11")
+//        var KEY_D1_DATA = stringPreferencesKey("d11")
+//        var KEY_CH_DATA = stringPreferencesKey("check")
+//
+//        val KEY_ACTIVITY_PREF = stringPreferencesKey("ActivityPREF")
+//        val KEY_ACTIVITY_EXEC = stringPreferencesKey("activity_exec")
+
 
     }
 
     override fun onCreate() {
+
         super.onCreate()
+
+
+
 
         GlobalScope.launch(Dispatchers.IO) {
             applyDeviceId(context = applicationContext)
@@ -41,18 +69,26 @@ class AppClass:Application() {
         // OneSignal Initialization
         OneSignal.initWithContext(this)
         OneSignal.setAppId(ONESIGNAL_APP_ID)
-        Hawk.init(this).build()
+
+        //TODO: delete dovn here
+//        Hawk.init(this).build()
     }
 
     private suspend fun applyDeviceId(context: Context) {
         val advertisingInfo = Adv(context)
         val idInfo = advertisingInfo.getAdvertisingId()
-        Hawk.put(MAIN_ID, idInfo)
+
+
+        //TODO: delete dovn here
+//        Hawk.put(KEY_FOR_MAIN_ID, idInfo)
+
+        dataStoreRepo.saveToDataStore(KEY_FOR_MAIN_ID_DATA, idInfo)
     }
+
 
 }
 
-class Adv (context: Context) {
+class Adv(context: Context) {
     private val adInfo = AdvertisingIdClient(context.applicationContext)
 
     suspend fun getAdvertisingId(): String =
@@ -62,3 +98,4 @@ class Adv (context: Context) {
             adIdInfo.id
         }
 }
+
