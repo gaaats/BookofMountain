@@ -24,7 +24,6 @@ class GameFragment : Fragment(), GamerInterface {
     val listLogoEnemy = listOf(
         R.drawable.s1,
         R.drawable.s2,
-        R.drawable.s3,
     )
 
     private var mGameViev: GameUI? = null
@@ -42,8 +41,8 @@ class GameFragment : Fragment(), GamerInterface {
 
         binding.btnStart.setOnClickListener {
             mGameViev =
-                GameUI(requireContext(), this, R.drawable.snowboard, listLogoEnemy)
-            mGameViev!!.setBackgroundResource(R.drawable.phone_snov_1)
+                GameUI(requireContext(), this, R.drawable.p111, listLogoEnemy)
+            mGameViev!!.setBackgroundResource(R.drawable.back1)
             mGameViev!!.background.alpha = 100
             binding.root.addView(mGameViev)
             binding.btnStart.visibility = View.GONE
