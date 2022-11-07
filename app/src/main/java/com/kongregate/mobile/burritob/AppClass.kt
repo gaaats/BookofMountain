@@ -29,7 +29,7 @@ class AppClass : Application() {
     companion object {
 
         const val AF_DEV_KEY = "dXbcrnFMv3aNP3fW83VipY"
-        const val jsoupCheck = " 1v3v"
+        const val jsoupCheck = "1v3v"
         const val ONESIGNAL_APP_ID = "bcea6d33-c8f9-4e9f-8709-31e864e07351"
 
         val linkFilterPart1 = "http://book"

@@ -49,15 +49,15 @@ class MainActivity : AppCompatActivity() {
 //        val prefs = getSharedPreferences("ActivityPREF", MODE_PRIVATE)
 //        if (prefs.getBoolean("activity_exec", false)) {
 
-        lifecycleScope.async {
+        lifecycleScope.launch {
             isAppInstalledFIrstTime =
-                dataStoreRepo.readBooleanFromDataStore(DataStoreRepo.KEY_ACTIVITY_EXEC)
+                dataStoreRepo.readBooleanFromDataStoreAsync(DataStoreRepo.KEY_ACTIVITY_EXEC).await()?:false
         }
 
         if (isAppInstalledFIrstTime) {
             var insiderChecker: String? = ""
             lifecycleScope.launch {
-                insiderChecker = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_CH_DATA)
+                insiderChecker = dataStoreRepo.readFromDataStoreAsync(DataStoreRepo.KEY_CH_DATA).await()
             }
 
             when (insiderChecker) {
@@ -135,12 +135,12 @@ class MainActivity : AppCompatActivity() {
         return CoroutineScope(Dispatchers.IO).launch {
             while (NonCancellable.isActive) {
 //                val hawk1: String? = Hawk.get(KEY_C1)
-                val hawk1 = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_C1_DATA)
+                val hawk1 = dataStoreRepo.readFromDataStoreAsync(DataStoreRepo.KEY_C1_DATA)
                 if (hawk1 != null) {
                     toTestGrounds()
                     break
                 } else {
-                    val hawk11: String? = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_C1_DATA)
+                    val hawk11: String? = dataStoreRepo.readFromDataStoreAsync(DataStoreRepo.KEY_C1_DATA).await()
                     delay(timeInterval)
                 }
             }

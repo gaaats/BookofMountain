@@ -2,6 +2,7 @@ package com.kongregate.mobile.burritob.data
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -57,25 +58,19 @@ class DataStoreRepo @Inject constructor(private val context: Application) {
     }
 
 
-    fun readFromDataStore(key: Preferences.Key<String>): String? {
+    suspend fun readFromDataStoreAsync(key: Preferences.Key<String>): Deferred<String?> {
         var finishResult: String? = ""
-        var result: Deferred<String?> = CoroutineScope(Dispatchers.IO).async {
+        return CoroutineScope(Dispatchers.IO).async {
             val preRes = context.dataStoreMainSettings.data.first()[key]
             preRes
         }
-        CoroutineScope(Dispatchers.IO).launch {
-            finishResult = result.await()
-        }
-        return finishResult
     }
 
-    suspend fun readBooleanFromDataStore(key: Preferences.Key<Boolean>): Boolean {
-        var result: Deferred<Boolean> = CoroutineScope(Dispatchers.IO).async {
+    suspend fun readBooleanFromDataStoreAsync(key: Preferences.Key<Boolean>): Deferred<Boolean?> {
+        return CoroutineScope(Dispatchers.IO).async {
             val preRes = context.dataStoreMainSettings.data.first()[key]
-            preRes ?: false
+            preRes
         }
-        val finishResult = result.await()
-        return finishResult
     }
 
 
@@ -85,14 +80,24 @@ class DataStoreRepo @Inject constructor(private val context: Application) {
 //        val nameParameter: String? = Hawk.get(KEY_C1)
 //        val appLinkParameter: String? = Hawk.get(KEY_D1)
 
-        val nameParameter = readFromDataStore(DataStoreRepo.KEY_C1_DATA)
-        val appLinkParameter = readFromDataStore(DataStoreRepo.KEY_D1_DATA)
+        val nameParameter = readFromDataStoreAsync(DataStoreRepo.KEY_C1_DATA).await()
+
+        val appLinkParameter = readFromDataStoreAsync(DataStoreRepo.KEY_D1_DATA).await()
+
+
+        delay(2000)
+
+        Log.d("lolo", "nameParameter = $nameParameter ")
+        Log.d("lolo", "appLinkParameter = $appLinkParameter ")
 
 
         val taskName =
             "${AppClass.linkFilterPart1}${AppClass.linkFilterPart2}${AppClass.odone}$nameParameter"
         val taskLink =
             "${AppClass.linkFilterPart1}${AppClass.linkFilterPart2}${AppClass.odone}$appLinkParameter"
+
+        Log.d("lolo", "taskName = $taskName ")
+        Log.d("lolo", "taskLink = $taskLink ")
 
         withContext(Dispatchers.IO) {
             if (nameParameter != "null") {

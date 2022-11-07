@@ -9,12 +9,14 @@ import android.provider.MediaStore
 import android.webkit.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.appsflyer.AppsFlyerLib
 import com.google.android.material.snackbar.Snackbar
 import com.kongregate.mobile.burritob.data.DataStoreRepo
 import com.kongregate.mobile.burritob.databinding.ActivityOpenVebVievBinding
 import com.onesignal.OneSignal
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
@@ -257,9 +259,17 @@ class OpenVebVievActivity : AppCompatActivity() {
 //        val dpOne: String? = Hawk.get(KEY_D1)
 //        val mainId: String? = Hawk.get(KEY_FOR_MAIN_ID)
 
-        var cpOne = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_C1_DATA)
-        var dpOne = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_D1_DATA)
-        var mainId = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_FOR_MAIN_ID_DATA)
+        var cpOne: String? = ""
+        var dpOne: String? = ""
+        var mainId: String? = ""
+
+        lifecycleScope.launch {
+            cpOne = dataStoreRepo.readFromDataStoreAsync(DataStoreRepo.KEY_C1_DATA).await()
+            dpOne = dataStoreRepo.readFromDataStoreAsync(DataStoreRepo.KEY_D1_DATA).await()
+            mainId =
+                dataStoreRepo.readFromDataStoreAsync(DataStoreRepo.KEY_FOR_MAIN_ID_DATA).await()
+        }
+
 
         val pack = "com.kongregate.mobile.burritob"
 
@@ -297,7 +307,11 @@ class OpenVebVievActivity : AppCompatActivity() {
 
 
 //        return spoon.getString("SAVED_URL", after).toString()
-        val liiink = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_SAVED_URL) ?: after
+        var liiink = ""
+        lifecycleScope.launch {
+            liiink =
+                dataStoreRepo.readFromDataStoreAsync(DataStoreRepo.KEY_SAVED_URL).await() ?: after
+        }
         return liiink
     }
 
@@ -373,7 +387,11 @@ class OpenVebVievActivity : AppCompatActivity() {
 //                    "SAVED_URL",
 //                    url
 //                ).toString()
-                firstUrl = dataStoreRepo.readFromDataStore(DataStoreRepo.KEY_SAVED_URL) ?: url
+                lifecycleScope.launch {
+                    firstUrl =
+                        dataStoreRepo.readFromDataStoreAsync(DataStoreRepo.KEY_SAVED_URL).await()
+                            ?: url
+                }
 
 //                val sp = getSharedPreferences("SP_WEBVIEW_PREFS", AppCompatActivity.MODE_PRIVATE)
 //                val editor = sp.edit()
